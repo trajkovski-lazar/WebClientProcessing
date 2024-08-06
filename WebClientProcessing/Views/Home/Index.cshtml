@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Import Clients";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<form asp-action="ImportXml" asp-controller="Client" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="xmlFile">Upload XML File:</label>
+        <input type="file" id="xmlFile" name="xmlFile" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+@if (ViewData["Clients"] != null && ((IEnumerable<WebClientProcessing.Models.Client>)ViewData["Clients"]).Any())
+{
+    <h3>Imported Clients</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Birth Date</th>
+                <th>Addresses</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in (IEnumerable<WebClientProcessing.Models.Client>)ViewData["Clients"])
+            {
+                <tr>
+                    <td>@client.Name</td>
+                    <td>@client.BirthDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <ul>
+                            @foreach (var address in client.Addresses)
+                            {
+                                <li>@address.Value (Type: @address.Type)</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No clients have been imported yet.</p>
+}
